@@ -1,5 +1,37 @@
-[sw.js](https://github.com/user-attachments/files/28902954/sw.js)
-[manifest.json](https://github.com/user-attachments/files/28902955/manifest.json)[index.html](https://github.com/user-attachments/files/28902957/index.html)<!DOCTYPE html>
+const CACHE = 'pypath-v1';
+const ASSETS = ['./index.html', './manifest.json'];
+
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+});
+{
+  "name": "PyPath – Aprende Python",
+  "short_name": "PyPath",
+  "description": "Aprende Python paso a paso con ejercicios interactivos y retroalimentación en tiempo real.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0B0F1A",
+  "theme_color": "#6EE7B7",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%230B0F1A'/><text x='96' y='135' font-size='96' text-anchor='middle' font-family='monospace' fill='%236EE7B7'>🐍</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["education"],
+  "lang": "es"
+}
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
@@ -1094,4 +1126,3 @@ if(state.started){
 </script>
 </body>
 </html>
-//primera version
